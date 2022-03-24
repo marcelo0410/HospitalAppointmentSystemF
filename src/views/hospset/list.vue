@@ -25,20 +25,24 @@
         <el-table-column type="selection" width="55"/>
         <el-table-column type="index" width="50" label="No"/>
         <el-table-column prop="hosname" label="Hospital name"/>
-        <el-table-column prop="hoscode" label="Hospital number"/>
+        <el-table-column prop="hoscode" label="Hospital No"/>
         <el-table-column prop="apiUrl" label="api path" width="200"/>
         <el-table-column prop="contactsName" label="Contact"/>
-        <el-table-column prop="contactsPhone" label="Contact number"/>
+        <el-table-column prop="contactsPhone" label="Contact No"/>
         <el-table-column label="status" width="80">
         <template slot-scope="scope">
                 {{ scope.row.status === 1 ? 'available' : 'unavailable' }}
         </template>
         </el-table-column>
 
-        <el-table-column label="Delete" width="280" align="center">
+        <el-table-column label="Option" width="280" align="center">
           <template slot-scope="scope">
               <el-button type="danger" size="mini" 
-                icon="el-icon-delete" @click="removeDataById(scope.row.id)"> </el-button>
+                icon="el-icon-delete" @click="removeDataById(scope.row.id)">Delete</el-button>
+              <el-button v-if="scope.row.status==1" type="primary" size="mini" 
+                icon="el-icon-delete" @click="lockHostSet(scope.row.id,0)">Lock</el-button>
+              <el-button v-if="scope.row.status==0" type="danger" size="mini" 
+                icon="el-icon-delete" @click="lockHostSet(scope.row.id,1)">Unlock</el-button>
           </template>
         </el-table-column>
 
@@ -138,6 +142,12 @@ export default {
     // get selection's id
     handleSelectionChange(selection){
       this.multipleSelection = selection
+    },
+    lockHostSet(id,status){
+      hospset.lockHospSet(id,status)
+        .then(response =>{
+          this.getList()
+        })
     }
 
   }
